@@ -42,6 +42,7 @@
 @property (nonatomic, assign) BOOL isAnimated;
 @property (nonatomic, assign) BOOL isInteractive;
 @property (nonatomic, assign) BOOL transitionInProgress;
+@property (nonatomic, assign) NSMutableArray *arrayOfViewControllers;
 @property (nonatomic, copy) void (^animationComplete)();
 @property (nonatomic, copy) void (^coordinatorAnimations)(id<UIViewControllerTransitionCoordinatorContext>context);
 @property (nonatomic, copy) void (^coordinatorCompletion)(id<UIViewControllerTransitionCoordinatorContext>context);
@@ -241,7 +242,7 @@
     return self;
 }
 
-+(void) addViewController:(NSString *)viewControllerIdentifier viewController:(UIViewController *)avc {
++ (void)addViewController:(NSString *)viewControllerIdentifier viewController:(UIViewController *)avc {
     
     if (!arrayOfViewControllers){
         arrayOfViewControllers = [[NSMutableDictionary alloc]initWithCapacity:0];
@@ -258,7 +259,7 @@
     [arrayOfViewControllers setObject:avc forKey:viewControllerIdentifier];
 }
 
-+(UIViewController *) queryViewController:(NSString *)viewControllerIdentifier {
++ (UIViewController *) queryViewController:(NSString *)viewControllerIdentifier {
     
     if (!arrayOfViewControllers)
         return nil;
