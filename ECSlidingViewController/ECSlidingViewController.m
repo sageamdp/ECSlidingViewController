@@ -27,6 +27,8 @@
 #import "ECSlidingInteractiveTransition.h"
 #import "ECSlidingSegue.h"
 
+NSMutableDictionary *arrayOfViewControllers;	///Added
+
 @interface ECSlidingViewController()
 @property (nonatomic, assign) ECSlidingViewControllerOperation currentOperation;
 @property (nonatomic, strong) ECSlidingAnimationController *defaultAnimationController;
@@ -42,7 +44,7 @@
 @property (nonatomic, assign) BOOL isAnimated;
 @property (nonatomic, assign) BOOL isInteractive;
 @property (nonatomic, assign) BOOL transitionInProgress;
-@property (nonatomic, assign) NSMutableArray *arrayOfViewControllers;
+@property (nonatomic, retain) NSMutableDictionary *arrayOfViewControllers;
 @property (nonatomic, copy) void (^animationComplete)();
 @property (nonatomic, copy) void (^coordinatorAnimations)(id<UIViewControllerTransitionCoordinatorContext>context);
 @property (nonatomic, copy) void (^coordinatorCompletion)(id<UIViewControllerTransitionCoordinatorContext>context);
@@ -78,6 +80,37 @@
     return [[self alloc] initWithTopViewController:topViewController];
 }
 
+///Added this:
+
++ (UIViewController * _Nullable) queryViewController:(NSString *)viewControllerIdentifier {
+    if (!arrayOfViewControllers)
+        return nil;
+    
+    if ([arrayOfViewControllers count]) {
+        UIViewController *existingViewController =(UIViewController *)[arrayOfViewControllers objectForKey:viewControllerIdentifier];
+        if (existingViewController) {
+            
+            return existingViewController;
+        }
+    }
+    return nil;
+}
+
++ (void) addViewController:(NSString *)viewControllerIdentifier viewController:(UIViewController *)avc {
+    if (!arrayOfViewControllers){
+        arrayOfViewControllers = [[NSMutableDictionary alloc]initWithCapacity:0];
+        
+    }
+    
+    if ([arrayOfViewControllers count]) {
+        UIViewController *existingViewController =(UIViewController *)[arrayOfViewControllers objectForKey:viewControllerIdentifier];
+        if (existingViewController) {
+            NSLog(@"%s ViewController exists %@", __func__, viewControllerIdentifier);
+            return;
+        }
+    }
+    [arrayOfViewControllers setObject:avc forKey:viewControllerIdentifier];
+}
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
     self = [super initWithCoder:aDecoder];
     if (self) {
@@ -242,37 +275,7 @@
     return self;
 }
 
-+ (void)addViewController:(NSString *)viewControllerIdentifier viewController:(UIViewController *)avc {
-    
-    if (!arrayOfViewControllers){
-        arrayOfViewControllers = [[NSMutableDictionary alloc]initWithCapacity:0];
-        
-    }
-    
-    if ([arrayOfViewControllers count]) {
-        UIViewController *existingViewController =(UIViewController *)[arrayOfViewControllers objectForKey:viewControllerIdentifier];
-        if (existingViewController) {
-            NSLog(@"%s ViewController exists %@", __func__, viewControllerIdentifier);
-            return;
-        }
-    }
-    [arrayOfViewControllers setObject:avc forKey:viewControllerIdentifier];
-}
 
-+ (UIViewController *) queryViewController:(NSString *)viewControllerIdentifier {
-    
-    if (!arrayOfViewControllers)
-        return nil;
-    
-    if ([arrayOfViewControllers count]) {
-        UIViewController *existingViewController =(UIViewController *)[arrayOfViewControllers objectForKey:viewControllerIdentifier];
-        if (existingViewController) {
-            
-            return existingViewController;
-        }
-    }
-    return nil;
-}
 
 #pragma mark - Properties
 
@@ -612,7 +615,7 @@
         return;
     }
     if (self.transitionInProgress) return;
-
+    
     self.view.userInteractionEnabled = NO;
     
     self.transitionInProgress = YES;
@@ -723,15 +726,15 @@
 
 - (void)updateTopViewGestures {
     BOOL topViewIsAnchored = self.currentTopViewPosition == ECSlidingViewControllerTopViewPositionAnchoredLeft ||
-                             self.currentTopViewPosition == ECSlidingViewControllerTopViewPositionAnchoredRight;
+    self.currentTopViewPosition == ECSlidingViewControllerTopViewPositionAnchoredRight;
     UIView *topView = self.topViewController.view;
-
+    
     if (topViewIsAnchored) {
         if (self.topViewAnchoredGesture & ECSlidingViewControllerAnchoredGestureDisabled) {
             topView.userInteractionEnabled = NO;
         } else {
             self.gestureView.frame = topView.frame;
-
+            
             if (self.topViewAnchoredGesture & ECSlidingViewControllerAnchoredGesturePanning &&
                 ![self.customAnchoredGesturesViewMap objectForKey:self.panGesture]) {
                 [self.customAnchoredGesturesViewMap setObject:self.panGesture.view forKey:self.panGesture];
@@ -739,7 +742,7 @@
                 [self.gestureView addGestureRecognizer:self.panGesture];
                 if (!self.gestureView.superview) [self.view insertSubview:self.gestureView aboveSubview:topView];
             }
-
+            
             if (self.topViewAnchoredGesture & ECSlidingViewControllerAnchoredGestureTapping &&
                 ![self.customAnchoredGesturesViewMap objectForKey:self.resetTapGesture]) {
                 [self.gestureView addGestureRecognizer:self.resetTapGesture];

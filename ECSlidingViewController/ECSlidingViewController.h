@@ -101,17 +101,17 @@
  */
 
 @interface ECSlidingViewController : UIViewController <UIViewControllerContextTransitioning,
-                                                       UIViewControllerTransitionCoordinator,
-                                                       UIViewControllerTransitionCoordinatorContext> {
-    @private
+UIViewControllerTransitionCoordinator,
+UIViewControllerTransitionCoordinatorContext> {
+@private
     CGFloat _anchorLeftPeekAmount;
     CGFloat _anchorLeftRevealAmount;
     CGFloat _anchorRightPeekAmount;
     CGFloat _anchorRightRevealAmount;
     UIPanGestureRecognizer *_panGesture;
     UITapGestureRecognizer *_resetTapGesture;
-                                                           
-    @protected
+    
+@protected
     UIViewController *_topViewController;
     UIViewController *_underLeftViewController;
     UIViewController *_underRightViewController;
@@ -243,9 +243,12 @@
  */
 - (void)resetTopViewAnimated:(BOOL)animated onComplete:(void(^)())complete;
 
-+(void) addViewController:(NSString *)viewControllerIdentifier viewController:(UIViewController *)avc;
+///// ADDED THIS
+/** Returns if the viewController already exists in the array and therefore should not be instantiated again */
++ (UIViewController * _Nullable) queryViewController:(NSString *)viewControllerIdentifier;
 
-+(UIViewController *) queryViewController:(NSString *)viewControllerIdentifier;
+/** Adds the viewController to the list of existing viewControllers when creating it */
++ (void) addViewController:(NSString *)viewControllerIdentifier viewController:(UIViewController *)avc;
 
 
 ///--------------------------------------
