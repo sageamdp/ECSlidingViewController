@@ -243,6 +243,10 @@
  */
 - (void)resetTopViewAnimated:(BOOL)animated onComplete:(void(^)())complete;
 
++(void) addViewController:(NSString *)viewControllerIdentifier viewController:(UIViewController *)avc;
+
++(UIViewController *) queryViewController:(NSString *)viewControllerIdentifier;
+
 
 ///--------------------------------------
 /// @name User Defined Runtime Attributes

@@ -241,6 +241,38 @@
     return self;
 }
 
++(void) addViewController:(NSString *)viewControllerIdentifier viewController:(UIViewController *)avc {
+    
+    if (!arrayOfViewControllers){
+        arrayOfViewControllers = [[NSMutableDictionary alloc]initWithCapacity:0];
+        
+    }
+    
+    if ([arrayOfViewControllers count]) {
+        UIViewController *existingViewController =(UIViewController *)[arrayOfViewControllers objectForKey:viewControllerIdentifier];
+        if (existingViewController) {
+            NSLog(@"%s ViewController exists %@", __func__, viewControllerIdentifier);
+            return;
+        }
+    }
+    [arrayOfViewControllers setObject:avc forKey:viewControllerIdentifier];
+}
+
++(UIViewController *) queryViewController:(NSString *)viewControllerIdentifier {
+    
+    if (!arrayOfViewControllers)
+        return nil;
+    
+    if ([arrayOfViewControllers count]) {
+        UIViewController *existingViewController =(UIViewController *)[arrayOfViewControllers objectForKey:viewControllerIdentifier];
+        if (existingViewController) {
+            
+            return existingViewController;
+        }
+    }
+    return nil;
+}
+
 #pragma mark - Properties
 
 - (void)setTopViewController:(UIViewController *)topViewController {
