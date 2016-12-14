@@ -111,6 +111,14 @@ NSMutableDictionary *arrayOfViewControllers;	///Added
     }
     [arrayOfViewControllers setObject:avc forKey:viewControllerIdentifier];
 }
+
+
++ (void) emptyViewControllers {
+    
+    arrayOfViewControllers = [[NSMutableDictionary alloc]initWithCapacity:0];
+    
+}
+
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
     self = [super initWithCoder:aDecoder];
     if (self) {

@@ -250,6 +250,9 @@ UIViewControllerTransitionCoordinatorContext> {
 /** Adds the viewController to the list of existing viewControllers when creating it */
 + (void) addViewController:(NSString *)viewControllerIdentifier viewController:(UIViewController *)avc;
 
+/** Removes all previous controllers from memory. Useful for login/logout. */
++ (void) emptyViewControllers;
+
 
 ///--------------------------------------
 /// @name User Defined Runtime Attributes
